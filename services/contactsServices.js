@@ -35,7 +35,7 @@ export async function addContact(data) {
   return newContact;
 }
 
-export const updateContactById = async (id, body) => {
+export const updateContactById = async (id, updatedContact) => {
   const contacts = await getContacts();
   const index = contacts.findIndex((item) => item.id === id);
 
@@ -43,11 +43,7 @@ export const updateContactById = async (id, body) => {
     return null;
   }
 
-  Object.keys(body).map((key) => {
-    contacts[index][key] = body[key];
-  });
-
-  contacts[index] = { id, ...contacts[index] };
+  contacts[index] = { ...contacts[index], ...updatedContact };
   await updateContacts(contacts);
 
   return contacts[index];

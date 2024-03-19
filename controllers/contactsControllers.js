@@ -32,11 +32,6 @@ const createContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
   const { id } = req.params;
-
-  if (!Object.keys(req.body).length) {
-    throw HttpError(400);
-  }
-
   const result = await updateContactById(id, req.body);
 
   if (!result) {
