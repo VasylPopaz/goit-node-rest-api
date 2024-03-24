@@ -1,63 +1,45 @@
-import fs from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
-
-const contactsPath = path.resolve("db", "contacts.json");
-
-export async function updateContacts(contacts) {
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-}
+import { Contact } from "../models/Contact.js";
 
 export async function getContacts() {
-  const contacts = await fs.readFile(contactsPath);
+  const contacts = await Contact.find({});
 
-  return JSON.parse(contacts);
+  return contacts;
 }
 
 export async function getContactById(id) {
-  const contacts = await getContacts();
-  const contactById = contacts.find((item) => item.id === id);
+  try {
+    const contact = await Contact.findById(id);
 
-  return contactById || null;
+    return contact;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function addContact(data) {
-  const contacts = await getContacts();
-
-  const newContact = {
-    id: nanoid(),
-    ...data,
-  };
-  contacts.push(newContact);
-
-  await updateContacts(contacts);
+  const newContact = await Contact.create(data);
 
   return newContact;
 }
 
-export const updateContactById = async (id, updatedContact) => {
-  const contacts = await getContacts();
-  const index = contacts.findIndex((item) => item.id === id);
+export const updateContactById = async (id, data) => {
+  try {
+    const updatedContact = await Contact.findByIdAndUpdate(id, data, {
+      new: true,
+    });
 
-  if (index === -1) {
+    return updatedContact;
+  } catch (error) {
     return null;
   }
-
-  contacts[index] = { ...contacts[index], ...updatedContact };
-  await updateContacts(contacts);
-
-  return contacts[index];
 };
 
 export async function removeContact(id) {
-  const contacts = await getContacts();
-  const index = contacts.findIndex((item) => item.id === id);
+  try {
+    const deletedContact = await Contact.findByIdAndDelete(id);
 
-  if (index === -1) return null;
-
-  const [result] = contacts.splice(index, 1);
-
-  await updateContacts(contacts);
-
-  return result;
+    return deletedContact;
+  } catch (error) {
+    return null;
+  }
 }

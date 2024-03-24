@@ -1,20 +1,22 @@
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import { HttpError } from "../helpers/HttpError.js";
 import {
-  getContacts,
-  getContactById,
   addContact,
-  updateContactById,
+  getContactById,
+  getContacts,
   removeContact,
+  updateContactById,
 } from "../services/contactsServices.js";
 
 const getAllContacts = async (req, res) => {
   const result = await getContacts();
+
   res.json(result);
 };
 
-const getOneContact = async (req, res) => {
+const getById = async (req, res) => {
   const { id } = req.params;
+
   const result = await getContactById(id);
 
   if (!result) {
@@ -41,6 +43,17 @@ const updateContact = async (req, res) => {
   res.json(result);
 };
 
+const updateStatusContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await updateContactById(id, req.body);
+
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  res.json(result);
+};
+
 const deleteContact = async (req, res) => {
   const { id } = req.params;
   const result = await removeContact(id);
@@ -54,8 +67,9 @@ const deleteContact = async (req, res) => {
 
 export default {
   getAllContacts: ctrlWrapper(getAllContacts),
-  getOneContact: ctrlWrapper(getOneContact),
+  getById: ctrlWrapper(getById),
   createContact: ctrlWrapper(createContact),
   updateContact: ctrlWrapper(updateContact),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
   deleteContact: ctrlWrapper(deleteContact),
 };
