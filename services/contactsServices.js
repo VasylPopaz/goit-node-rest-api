@@ -7,13 +7,9 @@ export async function getContacts() {
 }
 
 export async function getContactById(id) {
-  try {
-    const contact = await Contact.findById(id);
+  const contact = await Contact.findById(id);
 
-    return contact;
-  } catch (error) {
-    return null;
-  }
+  return contact;
 }
 
 export async function addContact(data) {
@@ -23,23 +19,15 @@ export async function addContact(data) {
 }
 
 export const updateContactById = async (id, data) => {
-  try {
-    const updatedContact = await Contact.findByIdAndUpdate(id, data, {
-      new: true,
-    });
+  const updatedContact = await Contact.findByIdAndUpdate(id, data, {
+    new: true,
+  });
 
-    return updatedContact;
-  } catch (error) {
-    return null;
-  }
+  return updatedContact;
 };
 
 export async function removeContact(id) {
-  try {
-    const deletedContact = await Contact.findByIdAndDelete(id);
+  const deletedContact = await Contact.findByIdAndDelete(id);
 
-    return deletedContact;
-  } catch (error) {
-    return null;
-  }
+  return deletedContact;
 }
